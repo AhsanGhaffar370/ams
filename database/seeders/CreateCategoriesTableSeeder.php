@@ -17,12 +17,20 @@ class CreateCategoriesTableSeeder extends Seeder
     {
         Category::insert([
             [ // 1
-                'name' => 'Category 1', 
+                'name' => 'Batteries', 
+                'image' => 'img1.jpg', 
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ],
             [ // 2
-                'name' => 'Category 2', 
+                'name' => 'Coil', 
+                'image' => null, 
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now()
+            ],
+            [ // 3
+                'name' => 'Butance', 
+                'image' => 'img2.jpg', 
                 'created_at' => Carbon::now(),
                 'updated_at' => Carbon::now()
             ]

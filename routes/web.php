@@ -16,3 +16,12 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('create-symlink', function() {
+    Artisan::call('storage:link');
+});
+
+
+Route::get('clear_cache', function () {
+    Artisan::call('optimize:clear');
+});

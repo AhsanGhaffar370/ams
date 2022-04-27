@@ -10,4 +10,27 @@ class Product extends Model
     use HasFactory;
 
     protected $table = 'products';
+
+    protected $fillable = [
+        'name',
+        'image',
+        'category_id',
+        'brand_id',
+        'price',
+        'quantity',
+        'description',
+        'status'
+    ];
+
+    public function scopeStatus($query) {
+        return $query->where('status', 1); // Active
+    }
+    
+    public function category() {
+        return $this->belongsTo(Category::class, 'category_id');
+    }
+
+    public function brand() {
+        return $this->belongsTo(Brand::class, 'brand_id');
+    }
 }

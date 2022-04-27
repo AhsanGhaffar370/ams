@@ -40,17 +40,33 @@ class ProductController extends Controller
     public function getProducts(Request $request) {
         $data = [];
         $data['default_path'] = config('globals.DEFAULT_IMAGE_PATH');
-        $data['image_path'] = config('globals.STORAGE_PATH') . config('globals.PRODUCT_IMAGES_PATH');
+        $data['product_image_path'] = config('globals.STORAGE_PATH') . config('globals.PRODUCT_IMAGES_PATH');
+        $data['category_image_path'] = config('globals.STORAGE_PATH') . config('globals.CATEGORY_IMAGES_PATH');
+        $data['brand_image_path'] = config('globals.STORAGE_PATH') . config('globals.BRAND_IMAGES_PATH');
         $data['products'] = [];
-        // try {
+
+        $limit = $request->has('limit') ? $request->get('limit') : 1;
+        $orderByCol = $request->has('order_by_col') ? $request->get('order_by_col') : 'id';
+        $orderSort = $request->has('order_sort') ? $request->get('order_sort') : 'ASC';
+        $ser_name = $request->has('ser_name') ? $request->get('ser_name') : '';
+        
+        try {
+            $data['products'] = Product::with(['category', 'brand'])->status();
+
             if ($request->has('product_id'))
-                $data['products'] = Product::where('id', $request->get('product_id'))->get();  
-            else
-                $data['products'] = Product::all();  
-        // } 
-        // catch(\Exception $e) {
-        //     return $this->error('Something went wrong!', 500);
-        // }
+                $data['products'] = $data['products']->where('id', $request->get('product_id')); 
+            if ($request->has('category_id'))
+                $data['products'] = $data['products']->where('category_id', $request->get('category_id'));  
+            if ($request->has('brand_id'))
+                $data['products'] = $data['products']->where('brand_id', $request->get('brand_id')); 
+            if (strlen($ser_name) >= 1)
+                $data['products'] = $data['products']->where('name','LIKE',"$ser_name%");  
+            
+            $data['products'] = $data['products']->orderBy($orderByCol, $orderSort)->paginate($limit);  
+        } 
+        catch(\Exception $e) {
+            return $this->error('Something went wrong!', 500);
+        }
 
         return $this->success(
             $data,
